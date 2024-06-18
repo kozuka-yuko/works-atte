@@ -1,0 +1,26 @@
+.content__heading {
+    text-align: center;
+    font-weight: bold;
+    font-family: Yu Gothic;
+}
+
+.main__inner {
+    width: 70%;
+}
+
+.main__inner-work {
+    width: 100%;
+}
+
+.main__inner-breaking {
+    width: 100%;
+}
+
+input {
+    margin: 20px 20px;
+    padding: 25px auto;
+    height: 20%;
+    background-color: #fff;
+    border: none;
+    border-radius: 5px;
+}
