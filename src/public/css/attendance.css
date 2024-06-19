@@ -1,0 +1,28 @@
+.attendance__table {
+    width: 100%;
+    margin-top: 16px;
+    width: 100%;
+}
+
+.table__row {
+    border-bottom: 1px solid #696969;
+}
+
+.table__label,
+.attendance__data {
+    padding: 16px 8px;
+}
+
+.table__label:first-of-type,
+.attendance__data:first-of-type {
+    padding-left: 48px;
+}
+
+.table__label:last-of-type,
+.attendance__data:last-of-type {
+    padding-right: 48px;
+}
+
+.table__label {
+    font-weight: bold;
+}
