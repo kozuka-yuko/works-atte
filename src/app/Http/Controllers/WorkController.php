@@ -10,4 +10,10 @@ class WorkController extends Controller
     {
         return view('work');
     }
+
+    public function search(Request $request)
+    {
+        Work::find($request->id)->show();
+        return view('attendance',compact('works','breakings'));
+    }
 }

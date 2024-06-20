@@ -15,3 +15,4 @@ use App\Http\Controllers\WorkController;
 */
 
 Route::get('/', [WorkController::class,'index']);
+Route::post('/attendance',[WorkController::class,'attendance']);
