@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Work;
+use App\Models\Breaking;
 
 class WorkController extends Controller
 {
@@ -13,7 +15,11 @@ class WorkController extends Controller
 
     public function search(Request $request)
     {
-        Work::find($request->id)->show();
+        /*$work=Work::find($request->work_date)->show();*/
+        $query = Work::query();
+        $query = $this -> getSearchQuery($request,$query);
+        $works = $query -> paginate(5);
+        $breakings = Breaking::all();
         return view('attendance',compact('works','breakings'));
     }
 }

@@ -40,23 +40,29 @@
             </th>
         </tr>
         <tr class="table__row">
+            @foreach($works as $work)
             <td class="attendance__data">
-                <input type="text" class="attendance__name" name="attendance__name" value="" />
+                {{ $work->user_id }}
             </td>
             <td class="attendance__data">
-                <input type="text" class="attendance__work-start" name="attendance__work-start" value="" />
+                {{ $work->start_time }}
             </td>
             <td class="attendance__data">
-                <input type="text" class="attendance__work-end" name="attendance__work-end" value="" />
+                {{ $work->end_time }}
             </td>
+            @endforeach
+            @foreach($breakings as $breaking)
             <td class="attendance__data">
-                <input type="text" class="attedance__breaking" name="attedance__breaking" value="" />
+                {{ $breaking-> <!--時間の差と休憩回数分の合計時間定義せねば-->}}
             </td>
+            @endforeach
+            @foreach($works as $work)
             <td class="attendance__data">
-                <input type="text" class="attendance__time" name="attendance__time" value="" />
+                {{ $work-><!--勤務終了－勤務開始時間を定義する--> }}
             </td>
+            @endforeach
         </tr>
     </table>
-    <!--ここにページネーション-->
+    {{ paginate(5) }}
 </div>
 @endsection
