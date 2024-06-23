@@ -19,7 +19,7 @@
 @section('content')
 <div class="content">
     <div class="content__heading">
-        <input type="date" class="content__date" name="content__date" value="" />
+        <input type="date" class="content__date" name="content__date" value="{{ $request('work_date') }}" />
         <!--↑ここの実装なぞ！-->
     </div>
     <table class="attendance__table">
@@ -63,6 +63,6 @@
             @endforeach
         </tr>
     </table>
-    {{ paginate(5) }}
+    {{ $works->links() }}
 </div>
 @endsection

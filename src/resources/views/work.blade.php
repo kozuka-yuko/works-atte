@@ -23,10 +23,10 @@
 
 @section('content')
 <div class="content__heading">
-    <p>福場凛太郎さん<!--$user('name')?-->お疲れ様です！</p>
+    <p>{{ $user('name') }}お疲れ様です！</p>
 </div>
 <div class="main__inner">
-    <form action="" class="work__button" method="">
+    <form action="/work" class="work__button" method="post">
         @csrf
         <div class="main__inner-work">
 
@@ -34,7 +34,7 @@
             <input type="submit" class="work-end" name="work-end" value="勤務終了" />
         </div>
     </form>
-    <form action="" class="breaking__button" method="">
+    <form action="/breaking" class="breaking__button" method="post">
         @csrf
         <div class="main__inner-breaking">
             <input type="submit" class="breaking-start" name="breaking-start" value="休憩開始" />

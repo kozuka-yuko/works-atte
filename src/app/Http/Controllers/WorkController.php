@@ -13,6 +13,13 @@ class WorkController extends Controller
         return view('work');
     }
 
+    public function attendance()
+    {
+        $works = Work::with('breaking')->pagenate(5);
+        $breakings = Breaking::all();
+        return view('attendance',compact('works','breakings'));
+    }
+
     public function search(Request $request)
     {
         /*$work=Work::find($request->work_date)->show();*/
