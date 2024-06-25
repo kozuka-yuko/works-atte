@@ -11,11 +11,7 @@ class Breaking extends Model
 
     protected $guarded = [
         'id'];
-
-    public function User()
-    {
-        return $this->belongsTo(User::class);
-    }
+        
 
     public function Work()
     {

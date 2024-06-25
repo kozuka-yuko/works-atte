@@ -14,7 +14,8 @@ use App\Http\Controllers\WorkController;
 |
 */
 
-Route::get('/', [WorkController::class,'index']);
+Route::get('/', [WorkController::class, 'index']);
+Route::post('/', [WorkController::class, 'store']);
 
 /*middleware */
-Route::post('/attendance',[WorkController::class,'search']);
+Route::post('/search', [WorkController::class, 'search']);
