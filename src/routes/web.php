@@ -18,4 +18,4 @@ Route::get('/', [WorkController::class, 'index']);
 Route::post('/', [WorkController::class, 'store']);
 
 /*middleware */
-Route::post('/search', [WorkController::class, 'search']);
+Route::get('/search', [WorkController::class, 'search']);

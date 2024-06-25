@@ -10,7 +10,7 @@
         @csrf
         <input type="submit" class="header__link" value="ホーム" />
     </form>
-    <form action="/attendance" method="post">
+    <form action="/search" method="get">
         @csrf
         <input class="header__link" type="date" name="date" value="日付一覧" />
     </form>

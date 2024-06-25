@@ -28,9 +28,12 @@ class WorkController extends Controller
         if ($request->has('end_time')) {
             $end_time = new Carbon();
         }
-
+        /*
         $request['breaking_time'] = $request->breaking_end - $request->breaking_start;
         $request['work_time'] = $request->work_end - $request->work_start;
+        複数回の休憩時間の合計を計算する
+        勤務時間は終了時間－開始時間－休憩時間
+        ・勤務終了ボタンを押したときに/attendaceに遷移するべき？*/
         Work::create(
             $request->only([
                 'user_id',
@@ -43,17 +46,14 @@ class WorkController extends Controller
             );
         return redirect('/'); 
     }
-    
-    
-    public function getSearchQuery($request,$query)
-    {
-        if(!empty($request->date)){
-            $query->whereDate('work_date','=',$request->date);
-        }
-        return $query;
 
-        $works = Work::with('breaking')->pagenate(5);
+    
+    
+    public function search(Request $request)
+    {
+        $works = Work::with('breaking')->DateSearch($request->work_date)->pagenate(5);
         $breakings = Breaking::all();
+        
         return view('attendance', compact('works', 'breakings'));
     }
 }
