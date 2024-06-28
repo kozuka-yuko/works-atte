@@ -23,7 +23,7 @@
 
 @section('content')
 <div class="content__heading">
-    <p>福場凛太郎さんお疲れ様です！</p>
+    <p>{{ $user('name') }}さんお疲れ様です！</p>
 </div>
 <div class="main__inner">
     <form action="/" class="work__button" method="post">

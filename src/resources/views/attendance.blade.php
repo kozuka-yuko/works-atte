@@ -10,7 +10,7 @@
     <input type="submit" class="header__link" value="ホーム" />
 </form>
 <input class="header__link" type="date" name="date" value="日付一覧" />
-<form action="" method="post">
+<form action="/logout" method="post">
     @csrf
     <input type="submit" class="header__link" value="ログアウト" />
 </form>
