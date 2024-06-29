@@ -13,10 +13,12 @@ use App\Http\Controllers\WorkController;
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::middleware('auth')->group(function(){
+
+Route::post('/', [WorkController::class, 'store']);
+
+Route::middleware('auth')->group(function () {
     Route::get('/', [WorkController::class, 'index']);
 });
-Route::post('/', [WorkController::class, 'store']);
 
 /*middleware */
 Route::get('/search', [WorkController::class, 'search']);

@@ -3,15 +3,18 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Models\Work;
 use App\Models\Breaking;
+use App\Models\User;
 use Carbon\Carbon;
 
 class WorkController extends Controller
 {
     public function index()
     {
-        return view('work');
+        $user = Auth::user();
+        return view('work', compact('user'));
     }
 
     public function store(Request $request)
@@ -32,10 +35,15 @@ class WorkController extends Controller
             $end_time = new
                 Carbon($request->input('end_time'));
         }
+
         Work::create(
             $request->only([
+                'user_name',
+                // 'work_date',
                 'work_start',
-                'work_end'
+                'work_end',
+                // 'work_time',
+                // 'breaking_time',
             ])
         );
         Breaking::create(
