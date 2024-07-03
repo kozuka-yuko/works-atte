@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Work;
 use App\Models\Breaking;
 use App\Models\User;
+use App\Http\Requests\LoginRequest;
 use Carbon\Carbon;
 
 class WorkController extends Controller
@@ -17,43 +18,7 @@ class WorkController extends Controller
         return view('work', compact('user'));
     }
 
-    public function store(Request $request)
-    {
-        if ($request->has('work_start')) {
-            $work_start = new
-                Carbon($request->input('work_start'));
-        }
-        if ($request->has('work_end')) {
-            $work_end = new
-                Carbon($request->input('work_end'));
-        }
-        if ($request->has('start_time')) {
-            $start_time = new
-                Carbon($request->input('start_time'));
-        }
-        if ($request->has('end_time')) {
-            $end_time = new
-                Carbon($request->input('end_time'));
-        }
-
-        Work::create(
-            $request->only([
-                'user_name',
-                // 'work_date',
-                'work_start',
-                'work_end',
-                // 'work_time',
-                // 'breaking_time',
-            ])
-        );
-        Breaking::create(
-            $request->only([
-                'breaking_start',
-                'breaking_end'
-            ])
-        );
-
-        /*
+    /*
         $request['breaking_time'] = $request->breaking_end - $request->breaking_start;
 
         if文がいる？
@@ -62,25 +27,58 @@ class WorkController extends Controller
 
         ・複数回の休憩時間の合計を計算する
         ・勤務終了ボタンを押したときに/attendaceに遷移するべき？
-        Work::create(
-            $request->only([
-                'user_id',
-                'work_date',
-                'work_start',
-                'work_end',
-                'breaking_time',
-                'work_time'
-            ])
-            );*/
+        */
+
+    public function workStart(Request $request)
+    {
+        $user = Auth::user();
+        $now = Carbon::now();
+        Work::create([
+            'user_id' => $user->id,
+            'work_date' => $now->format('n-d'),
+            'work_start' => $now->format('H:i')
+        ]);
         return redirect('/');
     }
 
-    /*
+    public function workEnd(Request $request)
+    {
+        $now = Carbon::now();
+        Work::create([
+            'work_end' => $now->format('H:i'),
+            'work_time',
+            'breaking_time',
+        ]);
+        return redirect('/');
+    }
+
+    public function breakingStart(Request $request)
+    {
+        $now = Carbon::now();
+        $workId = $request->input('work_id');
+        $work = Work::find($workId);
+        Breaking::create([
+            'work_id' => $work->id,
+            'breaking_start' => $now->format('H:i'),
+        ]);
+        return redirect('/');
+    }
+
+    public function breakingEnd(Request $request)
+    {
+        $now = Carbon::now();
+        Breaking::create([
+            'breaking_end' => $now->format('H:i'),
+        ]);
+        return redirect('/');
+    }
+
     public function search(Request $request)
     {
         $works = Work::with('breaking')->DateSearch($request->work_date)->pagenate(5);
         $breakings = Breaking::all();
 
         return view('attendance', compact('works', 'breakings'));
-    }*/
+    }
 }
+// 名前の表示をするからusersもいる？
