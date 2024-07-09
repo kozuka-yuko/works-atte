@@ -19,57 +19,59 @@ class WorkController extends Controller
     }
 
     /*
-        $request['breaking_time'] = $request->breaking_end - $request->breaking_start;
-
-        if文がいる？
-
-        $request['work_time'] = $request->work_end - $request->work_start - $request->breaking_time;
-
         ・複数回の休憩時間の合計を計算する
         ・勤務終了ボタンを押したときに/attendaceに遷移するべき？
         */
 
-    public function workStart(Request $request)
+    public function workStart()
     {
         $user = Auth::user();
         $now = Carbon::now();
         Work::create([
             'user_id' => $user->id,
-            'work_date' => $now->format('n-d'),
-            'work_start' => $now->format('H:i')
+            'work_date' => $now->toDateString(),
+            'work_start' => $now->toTimeString()
         ]);
         return redirect('/');
     }
 
-    public function workEnd(Request $request)
+    public function workEnd()
     {
-        $now = Carbon::now();
-        Work::create([
-            'work_end' => $now->format('H:i'),
-            'work_time',
-            'breaking_time',
-        ]);
+        $userId = Auth::id();
+        $today = Carbon::now()->toDateString();
+        $now = Carbon::now()->toTimeString();
+        $work = Work::firstOrNew(['user_id' => $userId, 'work_date' => $today]);
+        $work->work_end = $now;
+        $work->save();
         return redirect('/');
     }
 
-    public function breakingStart(Request $request)
+    public function breakingStart()
     {
-        $now = Carbon::now();
-        $workId = $request->input('work_id');
-        $work = Work::find($workId);
+        $userId = Auth::id();
+        $today = Carbon::now()->toDateString();
+        $now = Carbon::now()->toTimeString();
+        $work = Work::where('user_id', $userId)
+            ->where('work_date', $today)
+            ->first();
         Breaking::create([
             'work_id' => $work->id,
-            'breaking_start' => $now->format('H:i'),
+            'breaking_start' => $now,
         ]);
         return redirect('/');
     }
 
-    public function breakingEnd(Request $request)
+    public function breakingEnd()
     {
-        $now = Carbon::now();
-        Breaking::create([
-            'breaking_end' => $now->format('H:i'),
-        ]);
+        $userId = Auth::id();
+        $today = Carbon::now()->toDateString();
+        $now = Carbon::now()->toTimeString();
+        $lastBreaking = Breaking::whereHas('work',function($query)use($userId,$today){
+            $query->where('user_id',$userId)
+            ->where('work_date',$today);
+        })->orderBy('created_at', 'desc')->first();
+        $lastBreaking->breaking_end = $now;
+        $lastBreaking->save();
         return redirect('/');
     }
 
@@ -81,4 +83,5 @@ class WorkController extends Controller
         return view('attendance', compact('works', 'breakings'));
     }
 }
-// 名前の表示をするからusersもいる？
+
+// $request['work_time'] = $request->work_end - $request->work_start - $request->breaking_time;'work_time',
