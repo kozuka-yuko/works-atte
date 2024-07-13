@@ -27,6 +27,7 @@ class WorkController extends Controller
     {
         $user = Auth::user();
         $now = Carbon::now();
+
         Work::create([
             'user_id' => $user->id,
             'work_date' => $now->toDateString(),
@@ -40,6 +41,7 @@ class WorkController extends Controller
         $userId = Auth::id();
         $today = Carbon::now()->toDateString();
         $now = Carbon::now()->toTimeString();
+
         $work = Work::firstOrNew(['user_id' => $userId, 'work_date' => $today]);
         $work->work_end = $now;
         $work->save();
@@ -51,6 +53,7 @@ class WorkController extends Controller
         $userId = Auth::id();
         $today = Carbon::now()->toDateString();
         $now = Carbon::now()->toTimeString();
+
         $work = Work::where('user_id', $userId)
             ->where('work_date', $today)
             ->first();
@@ -64,14 +67,14 @@ class WorkController extends Controller
     public function breakingEnd()
     {
         $userId = Auth::id();
-        $today = Carbon::now()->toDateString();
+        $work = Work::where('user_id', $userId)->orderBy('created_at', 'desc')->first();
         $now = Carbon::now()->toTimeString();
-        $lastBreaking = Breaking::whereHas('work',function($query)use($userId,$today){
-            $query->where('user_id',$userId)
-            ->where('work_date',$today);
-        })->orderBy('created_at', 'desc')->first();
+
+        $lastBreaking = Breaking::where('work_id', $work->id)->whereNull('breaking_end')->first();
+
         $lastBreaking->breaking_end = $now;
         $lastBreaking->save();
+
         return redirect('/');
     }
 
