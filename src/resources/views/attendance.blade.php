@@ -5,11 +5,13 @@
 @endsection
 
 @section('link')
-<form action="" class="home__button">
+<form action="/" method="get">
     @csrf
     <input type="submit" class="header__link" value="ホーム" />
 </form>
-<input class="header__link" type="date" name="date" value="日付一覧" />
+<div class="header__link">
+    <a href="/attendance">日付一覧</a>
+</div>
 <form action="/logout" method="post">
     @csrf
     <input type="submit" class="header__link" value="ログアウト" />
@@ -19,7 +21,7 @@
 @section('content')
 <div class="content">
     <div class="content__heading">
-        <input type="date" class="content__date" name="content__date" value="{{ $request('work_date') }}" />
+        <input type="date" class="content__date" name="content__date" value="" />
         <!--↑ここの実装なぞ！-->
     </div>
     <table class="attendance__table">
@@ -45,20 +47,16 @@
                 {{ $work->user_id }}
             </td>
             <td class="attendance__data">
-                {{ $work->start_time }}
+                {{ $work->work_start }}
             </td>
             <td class="attendance__data">
-                {{ $work->end_time }}
+                {{ $work->work_end }}
             </td>
-            @endforeach
-            @foreach($breakings as $breaking)
             <td class="attendance__data">
-                {{ $breaking-> <!--時間の差と休憩回数分の合計時間定義せねば-->}}
+                {{ $work->allbreaking_time}}
             </td>
-            @endforeach
-            @foreach($works as $work)
             <td class="attendance__data">
-                {{ $work-><!--勤務終了－勤務開始時間を定義する--> }}
+                {{ $work->work_time }}
             </td>
             @endforeach
         </tr>

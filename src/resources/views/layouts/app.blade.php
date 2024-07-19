@@ -14,7 +14,7 @@
     <div class="app">
         <header class="header">
             <div class="header__heading">
-                <h1>Atte</h1>
+                <h1 class="header__heading-inner">Atte</h1>
             </div>
             @yield('link')
         </header>

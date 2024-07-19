@@ -2,6 +2,7 @@
     margin: 0 auto;
     padding: 30px 15px;
     width: 100%;
+    height: 80%;
 }
 
 .login-form__heading {
@@ -21,6 +22,7 @@
 
 .form__error {
     height: 20px;
+    width: 400px;
     color: #ff0000;
     text-align: left;
 }

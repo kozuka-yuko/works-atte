@@ -10,8 +10,10 @@ class Breaking extends Model
     use HasFactory;
 
     protected $guarded = [
-        'id'];
-        
+        'id'
+    ];
+    protected $primaryKey = 'work_id';
+
 
     public function Work()
     {

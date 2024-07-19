@@ -21,7 +21,7 @@ body {
     font-weight: bold;
 }
 
-h1 {
+.header__heading-inner {
     margin: auto;
     font-size: 35px;
 }
@@ -44,6 +44,7 @@ h1 {
     background-color: #F5F5F5;
     display: flex;
     flex-direction: column;
+    height: 85%;
 }
 
 .content__heading {
@@ -60,5 +61,3 @@ h1 {
     justify-content: center;
     margin-top: 10px;
 }
-
-/*ページネーションのスタイルの記述はここ？*/

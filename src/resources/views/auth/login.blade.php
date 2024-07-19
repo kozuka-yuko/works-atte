@@ -16,7 +16,9 @@
                 <input type="email" name="email" value="{{ old('email') }}" placeholder="メールアドレス" />
             </div>
             <div class="form__error">
-                <!--バリデーションを実装したら記述します-->
+                @error('email')
+                {{ $message }}
+                @enderror
             </div>
         </div>
         <div class="form__group">
@@ -24,7 +26,9 @@
                 <input type="password" name="password" placeholder="パスワード" />
             </div>
             <div class="form__error">
-                <!--バリデーションを実装したら記述します-->
+                @error('password')
+                {{ $message }}
+                @enderror
             </div>
         </div>
         <div class="form__button">

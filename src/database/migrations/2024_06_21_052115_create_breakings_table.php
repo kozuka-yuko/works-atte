@@ -17,7 +17,8 @@ class CreateBreakingsTable extends Migration
             $table->bigIncrements('breaking_id');
             $table->foreignid('work_id')->constrained()->cascadeOnDelete();
             $table->string('breaking_start');
-            $table->string('breaking_end');
+            $table->string('breaking_end')->nullable();
+            $table->string('breaking_time')->nullable();
             $table->timestamps();
         });
     }

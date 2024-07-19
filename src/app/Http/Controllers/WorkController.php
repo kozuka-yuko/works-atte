@@ -43,20 +43,17 @@ class WorkController extends Controller
         $now = Carbon::now()->toTimeString();
 
         $work = Work::firstOrNew(['user_id' => $userId, 'work_date' => $today]);
-        $work->work_end = $now;
-        $work->save();
+        $work->update(['work_end' => $now]);
         return redirect('/');
     }
 
     public function breakingStart()
     {
         $userId = Auth::id();
-        $today = Carbon::now()->toDateString();
         $now = Carbon::now()->toTimeString();
 
         $work = Work::where('user_id', $userId)
-            ->where('work_date', $today)
-            ->first();
+            ->orderBy('created_at', 'desc')->first();
         Breaking::create([
             'work_id' => $work->id,
             'breaking_start' => $now,
@@ -68,23 +65,27 @@ class WorkController extends Controller
     {
         $userId = Auth::id();
         $work = Work::where('user_id', $userId)->orderBy('created_at', 'desc')->first();
-        $now = Carbon::now()->toTimeString();
+        $now = Carbon::now();
 
         $lastBreaking = Breaking::where('work_id', $work->id)->whereNull('breaking_end')->first();
 
-        $lastBreaking->breaking_end = $now;
-        $lastBreaking->save();
+        $lastBreaking->breaking_time = $now->diffInMinutes($lastBreaking->breaking_start);
+        $hours = floor($lastBreaking->breaking_time / 60);
+        $minutes = $lastBreaking->breaking_time % 60;
+        $seconds = $now->diffInSeconds($lastBreaking->breaking_start) % 60;
+        $lastBreaking->update([
+            'breaking_end' => $now->toTimeString(),
+            'breaking_time' => sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds)
+        ]);
 
         return redirect('/');
     }
 
-    public function search(Request $request)
+    public function search()
     {
-        $works = Work::with('breaking')->DateSearch($request->work_date)->pagenate(5);
-        $breakings = Breaking::all();
+        $today = Carbon::today();
+        $works = Work::whereDate('created_at', $today)->paginate(5);
 
-        return view('attendance', compact('works', 'breakings'));
+        return view('attendance', compact('works'));
     }
 }
-
-// $request['work_time'] = $request->work_end - $request->work_start - $request->breaking_time;'work_time',

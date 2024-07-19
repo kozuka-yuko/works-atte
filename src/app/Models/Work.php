@@ -13,9 +13,6 @@ class Work extends Model
         'id'
     ];
 
-    protected $attributes = ['user_id' => 1, 'work_date' => 6,];
-
-
     public function User()
     {
         return $this->belongsTo(User::class);

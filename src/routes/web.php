@@ -14,11 +14,12 @@ use App\Http\Controllers\WorkController;
 |
 */
 
-Route::post('/', [WorkController::class, 'store']);
+Route::post('/work_start', [WorkController::class, 'workStart']);
+Route::post('/work_end', [WorkController::class, 'workEnd']);
+Route::post('/breaking_start', [WorkController::class, 'breakingStart']);
+Route::post('/breaking_end', [WorkController::class, 'breakingEnd']);
 
 Route::middleware('auth')->group(function () {
     Route::get('/', [WorkController::class, 'index']);
+    Route::get('/attendance', [WorkController::class, 'search']);
 });
-
-/*middleware */
-Route::get('/search', [WorkController::class, 'search']);
