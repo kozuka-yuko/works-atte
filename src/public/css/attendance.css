@@ -1,7 +1,5 @@
 .attendance__table {
-    width: 100%;
     margin-top: 16px;
-    width: 100%;
 }
 
 .table__row {
@@ -25,6 +23,10 @@
 
 .table__label {
     font-weight: bold;
+}
+
+.attendance__data {
+    text-align: center;
 }
 
 svg.w-5.h-5 {

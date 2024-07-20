@@ -68,7 +68,6 @@ class WorkController extends Controller
         $now = Carbon::now();
 
         $lastBreaking = Breaking::where('work_id', $work->id)->whereNull('breaking_end')->first();
-
         $lastBreaking->breaking_time = $now->diffInMinutes($lastBreaking->breaking_start);
         $hours = floor($lastBreaking->breaking_time / 60);
         $minutes = $lastBreaking->breaking_time % 60;
@@ -84,8 +83,8 @@ class WorkController extends Controller
     public function search()
     {
         $today = Carbon::today();
-        $works = Work::whereDate('created_at', $today)->paginate(5);
+        $works = Work::whereDate('created_at', $today)->with('user')->paginate(5);
 
-        return view('attendance', compact('works'));
+        return view('attendance', compact('works','today'));
     }
 }

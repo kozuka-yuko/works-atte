@@ -36,8 +36,12 @@ body {
 .header__link {
     margin: 0 auto;
     border: none;
-    text-decoration: none;
     cursor: pointer;
+    background-color: unset;
+}
+
+.header__link--inner {
+    text-decoration: none;
 }
 
 .content {

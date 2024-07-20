@@ -5,24 +5,25 @@
 @endsection
 
 @section('link')
-<form action="/" method="get">
-    @csrf
-    <input type="submit" class="header__link" value="ホーム" />
-</form>
-<div class="header__link">
-    <a href="/attendance">日付一覧</a>
+<div class="link">
+    <form action="/" method="get">
+        @csrf
+        <input type="submit" class="header__link" value="ホーム" />
+    </form>
+    <div class="header__link">
+        <a href="/attendance" class="header__link--inner">日付一覧</a>
+    </div>
+    <form action="/logout" method="post">
+        @csrf
+        <input type="submit" class="header__link" value="ログアウト" />
+    </form>
 </div>
-<form action="/logout" method="post">
-    @csrf
-    <input type="submit" class="header__link" value="ログアウト" />
-</form>
 @endsection
 
 @section('content')
 <div class="content">
     <div class="content__heading">
-        <input type="date" class="content__date" name="content__date" value="" />
-        <!--↑ここの実装なぞ！-->
+        <p class="content__date">{{ $today->format('Y-m-d') }}</p>
     </div>
     <table class="attendance__table">
         <tr class="table__row">
@@ -41,10 +42,10 @@
                 勤務時間
             </th>
         </tr>
+        @foreach($works as $work)
         <tr class="table__row">
-            @foreach($works as $work)
             <td class="attendance__data">
-                {{ $work->user_id }}
+                {{ $work->user->name }}
             </td>
             <td class="attendance__data">
                 {{ $work->work_start }}
@@ -58,8 +59,8 @@
             <td class="attendance__data">
                 {{ $work->work_time }}
             </td>
-            @endforeach
         </tr>
+        @endforeach
     </table>
     {{ $works->links() }}
 </div>

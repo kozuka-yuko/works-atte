@@ -11,7 +11,7 @@
         <input type="submit" class="header__link" value="ホーム" />
     </form>
     <div class="header__link">
-        <a href="/attendance">日付一覧</a>
+        <a href="/attendance" class="header__link--inner">日付一覧</a>
     </div>
     <form action="/logout" method="post">
         @csrf
