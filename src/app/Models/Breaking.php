@@ -9,14 +9,10 @@ class Breaking extends Model
 {
     use HasFactory;
 
-    protected $guarded = [
-        'id'
-    ];
-    protected $primaryKey = 'work_id';
+    protected $guarded = ['id'];
 
-
-    public function Work()
+    public function work()
     {
-        return $this->belongsTo(Work::class);
+        return $this->belongsTo(Work::class, 'work_id');
     }
 }

@@ -6,8 +6,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Work;
 use App\Models\Breaking;
-use App\Models\User;
-use App\Http\Requests\LoginRequest;
 use Carbon\Carbon;
 
 class WorkController extends Controller
@@ -39,24 +37,24 @@ class WorkController extends Controller
     public function workEnd()
     {
         $userId = Auth::id();
-        $today = Carbon::now()->toDateString();
-        $now = Carbon::now()->toTimeString();
+        $now = Carbon::now();
 
-        $work = Work::firstOrNew(['user_id' => $userId, 'work_date' => $today]);
-        $work->update(['work_end' => $now]);
+        $work = Work::firstOrNew(['user_id' => $userId])->orderBy('created_at', 'desc')->first();
+
+        $work->update(['work_end' => $now->toTimeString()]);
         return redirect('/');
     }
 
     public function breakingStart()
     {
         $userId = Auth::id();
-        $now = Carbon::now()->toTimeString();
+        $now = Carbon::now();
 
         $work = Work::where('user_id', $userId)
             ->orderBy('created_at', 'desc')->first();
         Breaking::create([
             'work_id' => $work->id,
-            'breaking_start' => $now,
+            'breaking_start' => $now->toTimeString()
         ]);
         return redirect('/');
     }
@@ -66,16 +64,19 @@ class WorkController extends Controller
         $userId = Auth::id();
         $work = Work::where('user_id', $userId)->orderBy('created_at', 'desc')->first();
         $now = Carbon::now();
-
         $lastBreaking = Breaking::where('work_id', $work->id)->whereNull('breaking_end')->first();
-        $lastBreaking->breaking_time = $now->diffInMinutes($lastBreaking->breaking_start);
-        $hours = floor($lastBreaking->breaking_time / 60);
-        $minutes = $lastBreaking->breaking_time % 60;
-        $seconds = $now->diffInSeconds($lastBreaking->breaking_start) % 60;
-        $lastBreaking->update([
-            'breaking_end' => $now->toTimeString(),
-            'breaking_time' => sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds)
-        ]);
+
+        if ($lastBreaking && is_null($lastBreaking->breaking_time)) {
+            $lastBreaking->breaking_time = $now->diffInMinutes($lastBreaking->breaking_start);
+            $hours = floor($lastBreaking->breaking_time / 60);
+            $minutes = $lastBreaking->breaking_time % 60;
+            $seconds = $now->diffInSeconds($lastBreaking->breaking_start) % 60;
+
+            $lastBreaking->update([
+                'breaking_end' => $now->toTimeString(),
+                'breaking_time' => sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds)
+            ]);
+        }
 
         return redirect('/');
     }
@@ -85,6 +86,6 @@ class WorkController extends Controller
         $today = Carbon::today();
         $works = Work::whereDate('created_at', $today)->with('user')->paginate(5);
 
-        return view('attendance', compact('works','today'));
+        return view('attendance', compact('works', 'today'));
     }
 }

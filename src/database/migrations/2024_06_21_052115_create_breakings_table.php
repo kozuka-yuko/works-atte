@@ -14,7 +14,7 @@ class CreateBreakingsTable extends Migration
     public function up()
     {
         Schema::create('breakings', function (Blueprint $table) {
-            $table->bigIncrements('breaking_id');
+            $table->id();
             $table->foreignid('work_id')->constrained()->cascadeOnDelete();
             $table->string('breaking_start');
             $table->string('breaking_end')->nullable();
