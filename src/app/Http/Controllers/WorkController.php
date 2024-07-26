@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+require '../vendor/autoload.php';
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Work;
@@ -15,11 +16,6 @@ class WorkController extends Controller
         $user = Auth::user();
         return view('work', compact('user'));
     }
-
-    /*
-        ・複数回の休憩時間の合計を計算する
-        ・勤務終了ボタンを押したときに/attendaceに遷移するべき？
-        */
 
     public function workStart()
     {
@@ -39,9 +35,30 @@ class WorkController extends Controller
         $userId = Auth::id();
         $now = Carbon::now();
 
-        $work = Work::firstOrNew(['user_id' => $userId])->orderBy('created_at', 'desc')->first();
+        $work = Work::where('user_id',$userId)->orderBy('created_at', 'desc')->first();
+        $yesterdayWork = Work::where('work_id',$work->work_id - 1);
 
-        $work->update(['work_end' => $now->toTimeString()]);
+        if($now->isSameDay(Carbon::parse($work->work_date))){
+            $work->update(['work_end' => $now->toTimeString()]);
+        }else{
+            $yesterdayWork->update(['work_end' => '23:59:59']);
+            $work = Work::create(['user_id'=> $userId,
+            'work_date' => $now->toDateString(),
+            'work_start'=>'00:00:00',
+            'work_end'=>$now->toTimeString()]);}
+
+        $todayBreakings = Breaking::where('work_id',$work->id)->get();
+        $yesterdayBreakings =Breaking::where('work_id',$work->id-1)->get();
+        
+        if($work->work_start !== '00:00'){
+            $allBreakingTime = $todayBreakings->sum('breaking_time');
+        }else{
+            $allBreakingTime = $yesterdayBreakings->sum('breaking_time');
+        }
+        dd($allBreakingTime);
+
+
+        $work->update(['allbreaking_time' => $allBreakingTime]);
         return redirect('/');
     }
 
