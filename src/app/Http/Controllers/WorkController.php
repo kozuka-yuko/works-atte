@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 require '../vendor/autoload.php';
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Work;
@@ -24,8 +25,8 @@ class WorkController extends Controller
 
         Work::create([
             'user_id' => $user->id,
-            'work_date' => $now->toDateString(),
-            'work_start' => $now->toTimeString()
+            'work_date' => $now->format('Y_m_d'),
+            'work_start' => $now->secondsSinceMidnight()
         ]);
         return redirect('/');
     }
@@ -35,30 +36,48 @@ class WorkController extends Controller
         $userId = Auth::id();
         $now = Carbon::now();
 
-        $work = Work::where('user_id',$userId)->orderBy('created_at', 'desc')->first();
-        $yesterdayWork = Work::where('work_id',$work->work_id - 1);
+        $work = Work::where('user_id', $userId)->orderBy('created_at', 'desc')->first();
 
-        if($now->isSameDay(Carbon::parse($work->work_date))){
-            $work->update(['work_end' => $now->toTimeString()]);
-        }else{
-            $yesterdayWork->update(['work_end' => '23:59:59']);
-            $work = Work::create(['user_id'=> $userId,
-            'work_date' => $now->toDateString(),
-            'work_start'=>'00:00:00',
-            'work_end'=>$now->toTimeString()]);}
-
-        $todayBreakings = Breaking::where('work_id',$work->id)->get();
-        $yesterdayBreakings =Breaking::where('work_id',$work->id-1)->get();
-        
-        if($work->work_start !== '00:00'){
-            $allBreakingTime = $todayBreakings->sum('breaking_time');
-        }else{
-            $allBreakingTime = $yesterdayBreakings->sum('breaking_time');
+        if ($work->work_start !== Carbon::parse('00:00:00')->secondsSinceMidnight()) {
+            $work->update(['work_end' => $now->secondsSinceMidnight()]);
+        } else {
+            $work->update(['work_end' => Carbon::parse('23:59:59')->secondsSinceMidnight()]);
+            $newWork = Work::create([
+                'user_id' => $userId,
+                'work_date' => $now->format('Y_m_d'),
+                'work_start' => Carbon::parse('00:00:00')->secondsSinceMidnight(),
+                'work_end' => $now->secondsSinceMidnight()
+            ]);
         }
-        dd($allBreakingTime);
+
+        $breaking = Breaking::where('work_id', $work->id)->get();
+        $newBreaking = Breaking::where('work_id', $work->id + 1)->get();
+
+        if ($work->work_start !== Carbon::parse('00:00:00')->secondsSinceMidnight()) {
+            $allBreakingTime = $breaking->sum('breaking_time');
+            $work_time = $work->work_end - $work->work_start - $allBreakingTime;
+            $work->update([
+                'allbreaking_time' => $allBreakingTime,
+                'work_time' => $work_time
+            ]);
+        } else {
+            $y_allBreakingTime = $breaking->sum('breaking_time');
+            $y_workTime = $work->work_end - $work->work_start - $y_allBreakingTime;
+            $work->update([
+                'allbreaking_time' => $y_allBreakingTime,
+                'work_time' => $y_workTime
+            ]);
+
+            $t_allBreakingTime = $newBreaking->sum('breaking_time');
+            $t_workTime = $newWork->work_end - $t_allBreakingTime;
+            $newWork->update([
+                'allbreaking_time' => $t_allBreakingTime,
+                'work_time' => $t_workTime
+            ]);
+        }
 
 
-        $work->update(['allbreaking_time' => $allBreakingTime]);
+
         return redirect('/');
     }
 
@@ -71,7 +90,7 @@ class WorkController extends Controller
             ->orderBy('created_at', 'desc')->first();
         Breaking::create([
             'work_id' => $work->id,
-            'breaking_start' => $now->toTimeString()
+            'breaking_start' => $now->secondsSinceMidnight()
         ]);
         return redirect('/');
     }
@@ -83,18 +102,21 @@ class WorkController extends Controller
         $now = Carbon::now();
         $lastBreaking = Breaking::where('work_id', $work->id)->whereNull('breaking_end')->first();
 
-        if ($lastBreaking && is_null($lastBreaking->breaking_time)) {
-            $lastBreaking->breaking_time = $now->diffInMinutes($lastBreaking->breaking_start);
-            $hours = floor($lastBreaking->breaking_time / 60);
-            $minutes = $lastBreaking->breaking_time % 60;
-            $seconds = $now->diffInSeconds($lastBreaking->breaking_start) % 60;
-
+        if ($lastBreaking->breaking_start !== Carbon::parse('00:00:00')->secondsSinceMidnight() && is_null($lastBreaking->breaking_time)) {
+            $breakingTime = $now->secondsSinceMidnight() - $lastBreaking->breaking_start;
             $lastBreaking->update([
-                'breaking_end' => $now->toTimeString(),
-                'breaking_time' => sprintf('%02d:%02d:%02d', $hours, $minutes, $seconds)
+                'breaking_end' => $now->secondsSinceMidnight(),
+                'breaking_time' => $breakingTime
+            ]);
+        } else {
+            Breaking::create([
+                'work_id' => $work->id,
+                'breaking_start' => Carbon::parse('00:00:00')->secondsSinceMidnight(),
+                'breaking_end'
+                => $now->secondsSinceMidnight(),
+                'breaking_time' => $now->secondsSinceMidnight()
             ]);
         }
-
         return redirect('/');
     }
 
