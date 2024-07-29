@@ -75,9 +75,6 @@ class WorkController extends Controller
                 'work_time' => $t_workTime
             ]);
         }
-
-
-
         return redirect('/');
     }
 
@@ -124,6 +121,13 @@ class WorkController extends Controller
     {
         $today = Carbon::today();
         $works = Work::whereDate('created_at', $today)->with('user')->paginate(5);
+
+        foreach ($works as $work) {
+            $work->work_start = gmdate('H:i:s', $work->work_start);
+            $work->work_end = gmdate('H:i:s', $work->work_end);
+            $work->allbreaking_time = gmdate('H:i:s', $work->allbreaking_time);
+            $work->work_time = gmdate('H:i:s', $work->work_time);
+        }
 
         return view('attendance', compact('works', 'today'));
     }
