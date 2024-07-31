@@ -28,13 +28,19 @@
     <form action="/work_start" class="form" method="post">
         @csrf
         <div class="main__inner-work">
-            <input type="submit" class="work-start" name="work-start" value="勤務開始" />
+            @php 
+            $isWorkStartDisabled = $isWorkStartDisabled ?? false;
+            $isWorkEndDisabled = $isWorkEndDisabled ?? true;
+            $isBreakingStartDisabled = $isBreakingStartDisabled ?? true;
+            $isBreakingEndDisabled = $isBreakingEndDisabled ?? true;
+            @endphp
+            <input type="submit" {{$isWorkStartDisabled ? 'disabled' : '' }} class="work-start" name="work-start" value="勤務開始" />
         </div>
     </form>
     <form action="/work_end" class="form" method="post">
         @csrf
         <div class="main__inner-work">
-            <input type="submit" class="work-end" name="work-end" value="勤務終了" />
+            <input type="submit" {{$isWorkEndDisabled ? 'disabled' : '' }} class="work-end" name="work-end" value="勤務終了" />
         </div>
     </form>
 </div>
@@ -42,13 +48,13 @@
     <form action="/breaking_start" class="form" method="post">
         @csrf
         <div class="main__inner-breaking">
-            <input type="submit" class="breaking-start" name="breaking-start" value="休憩開始" />
+            <input type="submit" {{$isBreakingStartDisabled ? 'disabled' : '' }} class="breaking-start" name="breaking-start" value="休憩開始" />
         </div>
     </form>
     <form action="/breaking_end" class="form" method="post">
         @csrf
         <div class="main__inner-breaking">
-            <input type="submit" class="breaking-end" name="breaking-end" value="休憩終了" />
+            <input type="submit" {{$isBreakingEndDisabled ? 'disabled' : '' }} class="breaking-end" name="breaking-end" value="休憩終了" />
         </div>
     </form>
 </div>

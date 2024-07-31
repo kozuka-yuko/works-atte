@@ -15,7 +15,15 @@ class WorkController extends Controller
     public function index()
     {
         $user = Auth::user();
-        return view('work', compact('user'));
+        $lastWork = Work::where('user_id', $user->id)->orderBy('created_at', 'desc')->first();
+        $lastBreaking =
+        Breaking::where('work_id', $lastWork->id)->orderBy('created_at', 'desc')->first();
+        
+        $isWorkStartDisabled = $lastWork && $lastWork->work_start !== null;
+        $isWorkEndDisabled = !$isWorkStartDisabled || ($lastWork && $lastWork->work_end !== null);
+        $isBreakingStartDisabled = !$isWorkStartDisabled || ($lastWork &&$lastBreaking->breaking_start !== null);
+        $isBreakingEndDisabled = !$isWorkStartDisabled || ($lastWork && $lastBreaking->breaking_end !== null);
+        return view('work', compact('user', 'isWorkStartDisabled', 'isWorkEndDisabled', 'isBreakingStartDisabled', 'isBreakingEndDisabled'));
     }
 
     public function workStart()
