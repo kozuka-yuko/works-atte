@@ -15,14 +15,14 @@ class WorkController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $lastWork = Work::where('user_id', $user->id)->orderBy('created_at', 'desc')->first();
-        $lastBreaking =
-        Breaking::where('work_id', $lastWork->id)->orderBy('created_at', 'desc')->first();
-        
-        $isWorkStartDisabled = $lastWork && $lastWork->work_start !== null;
-        $isWorkEndDisabled = !$isWorkStartDisabled || ($lastWork && $lastWork->work_end !== null);
-        $isBreakingStartDisabled = !$isWorkStartDisabled || ($lastWork &&$lastBreaking->breaking_start !== null);
-        $isBreakingEndDisabled = !$isWorkStartDisabled || ($lastWork && $lastBreaking->breaking_end !== null);
+        $today = Carbon::today();
+        $newWork = Work::where('user_id', $user->id)->whereDate('created_at', $today)->orderBy('created_at', 'desc')->first();
+        $newBreaking = Breaking::where('work_id', $newWork->id)->whereDate('created_at', $today)->orderBy('created_at', 'desc')->first();
+
+        $isWorkStartDisabled = $newWork && $newWork->work_start !== null && $newWork->work_end === null;
+        $isWorkEndDisabled = !$isWorkStartDisabled || ($newWork && $newWork->work_end !== null);
+        $isBreakingStartDisabled = !$isWorkStartDisabled || ($newBreaking && $newBreaking->breaking_start !== null && $newBreaking->breaking_end === null);
+        $isBreakingEndDisabled = !$isWorkStartDisabled || !$isBreakingStartDisabled;
         return view('work', compact('user', 'isWorkStartDisabled', 'isWorkEndDisabled', 'isBreakingStartDisabled', 'isBreakingEndDisabled'));
     }
 
