@@ -13,29 +13,31 @@ use Carbon\Carbon;
 class WorkController extends Controller
 {
 
-    public function newRecordAtMidnight(){
+    public function newRecordAtMidnight()
+    {
         $user = Auth::user();
         $now = Carbon::now();
         $yesterday = $now->copy()->subDay()->format('Y-m-d');
         $breaking = Breaking::whereDate('created_at', $yesterday)->get();
         $work = Work::whereDate('created_at', $yesterday)->whereNull('work_end')->first();
 
-        if($now->format('H:i:s') === '00:00:00'){
+        if ($now->isSameMinute(Carbon::today())) {
             $allBreakingTime = $breaking->sum('breaking_time');
-            $workTime = $work->work_end - $work->work_start - $allBreakingTime;
-                
-            $work->update([
-                'work_end' => '23:59:59',
-                'allbreaking_time' => $allBreakingTime,
-                'work_time' => $workTime
-            ]);
+            if ($work) {
+                $workTime = $now->copy()->endOfDay()->secondsSinceMidnight() - $work->work_start - $allBreakingTime;
+                $work->update([
+                    'work_end' => $now->copy()->endOfDay()->secondsSinceMidnight(),
+                    'allbreaking_time' => $allBreakingTime,
+                    'work_time' => $workTime
+                ]);
+            }
 
             Work::create([
                 'user_id' => $user->id,
                 'work_date' => $now->format('Y_m_d'),
-                'work_start' => $now->secondsSinceMidnight()
+                'work_start' => Carbon::today()->secondsSinceMidnight()
             ]);
-        } 
+        }
     }
 
     public function index()
@@ -74,13 +76,14 @@ class WorkController extends Controller
         $breaking = Breaking::where('work_id', $work->id)->get();
 
         $allBreakingTime = $breaking->sum('breaking_time');
-        $work_time = $work->work_end - $work->work_start - $allBreakingTime;
+        $workEnd = $now->secondsSinceMidnight();
+        $work_time = $workEnd - $work->work_start - $allBreakingTime;
         $work->update([
-            'work_end' => $now->secondsSinceMidnight(),
+            'work_end' => $workEnd,
             'allbreaking_time' => $allBreakingTime,
             'work_time' => $work_time
         ]);
-        
+
         return redirect('/');
     }
 

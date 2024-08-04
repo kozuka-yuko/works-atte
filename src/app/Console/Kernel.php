@@ -16,10 +16,12 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->call(function(){
+        $schedule->call(function () {
             $controller = new WorkController();
             $controller->newRecordAtMidnight();
-        })->daily()->when(function(){return true;});
+        })->daily()->when(function () {
+            return true;
+        });
     }
 
     /**
@@ -29,7 +31,7 @@ class Kernel extends ConsoleKernel
      */
     protected function commands()
     {
-        $this->load(__DIR__.'/Commands');
+        $this->load(__DIR__ . '/Commands');
 
         require base_path('routes/console.php');
     }
