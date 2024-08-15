@@ -23,7 +23,14 @@
 @section('content')
 <div class="content">
     <div class="content__heading">
-        <p class="content__date">{{ $today->format('Y-m-d') }}</p>
+        <span>
+            <a href="{{ url('/?date=' .$prevDay->format('Y-m-d')) }}" class="prev-day">
+                << /a>
+        </span>
+        <span class="current-date">{{ $works->work_date->format('Y-m-d') }}</span>
+        <span>
+            <a href="{{ url('/?date=' .$nextDay->format('Y-m-d')) }}" class="next-day">></a>
+        </span>
     </div>
     <table class="attendance__table">
         <tr class="table__row">

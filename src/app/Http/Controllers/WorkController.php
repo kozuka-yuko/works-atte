@@ -20,7 +20,9 @@ class WorkController extends Controller
         $yesterday = $now->copy()->subDay()->format('Y-m-d');
         $breaking = Breaking::whereDate('created_at', $yesterday)->get();
         $work = Work::whereDate('created_at', $yesterday)->whereNull('work_end')->first();
-
+        if ($now->isSameMinute(Carbon::today()) && $work->breaking_end === null) {
+            $work->update(['breaking_end' => $now->copy()->endOfDay()->secondsSinceMidnight()]);
+        }
         if ($now->isSameMinute(Carbon::today())) {
             $allBreakingTime = $breaking->sum('breaking_time');
             if ($work) {
@@ -60,7 +62,7 @@ class WorkController extends Controller
 
         Work::create([
             'user_id' => $user->id,
-            'work_date' => $now->format('Y_m_d'),
+            'work_date' => $now->format('Y-m-d'),
             'work_start' => $now->secondsSinceMidnight()
         ]);
         return redirect('/');
@@ -126,10 +128,21 @@ class WorkController extends Controller
         return redirect('/');
     }
 
-    public function search()
+    public function search(Request $request)
     {
-        $today = Carbon::today();
-        $works = Work::whereDate('created_at', $today)->with('user')->paginate(5);
+        $date = $request->input("date");
+        if($date && preg_match("/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/",$date)){
+            $date = strtotime($date);
+        }else{
+            $date = null;
+        }
+        if(!$date) $date = time();
+
+        $attendance =$this->getAttendance($date);
+
+        $prevDay = strtotime("-1 day",$date);
+        $nextDay = strtotime("+1 day",$date);
+        $works = Work::whereDate('created_at', $request->date)->with('user')->paginate(5);
 
         foreach ($works as $work) {
             $work->work_start = gmdate('H:i:s', $work->work_start);
@@ -138,6 +151,6 @@ class WorkController extends Controller
             $work->work_time = gmdate('H:i:s', $work->work_time);
         }
 
-        return view('attendance', compact('works', 'today'));
+        return view('attendance', compact('attendance','works', 'prevDay', 'nextDay'));
     }
 }
