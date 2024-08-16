@@ -130,19 +130,17 @@ class WorkController extends Controller
 
     public function search(Request $request)
     {
-        $date = $request->input("date");
+        $date = $request->input("work_date");
         if($date && preg_match("/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/",$date)){
-            $date = strtotime($date);
+            $date = Carbon::createFromFormat('Y-m-d',$date);
         }else{
-            $date = null;
+            $date =Carbon::today();
         }
-        if(!$date) $date = time();
 
-        $attendance =$this->getAttendance($date);
+        $prevDay = $date->copy()->subDay()->format('Y-m-d');
+        $nextDay = $date->copy()->addDay()->format('Y-m-d');
 
-        $prevDay = strtotime("-1 day",$date);
-        $nextDay = strtotime("+1 day",$date);
-        $works = Work::whereDate('created_at', $request->date)->with('user')->paginate(5);
+        $works = Work::whereDate('created_at', $date->format('Y-m-d'))->with('user')->paginate(5);
 
         foreach ($works as $work) {
             $work->work_start = gmdate('H:i:s', $work->work_start);
@@ -151,6 +149,6 @@ class WorkController extends Controller
             $work->work_time = gmdate('H:i:s', $work->work_time);
         }
 
-        return view('attendance', compact('attendance','works', 'prevDay', 'nextDay'));
+        return view('attendance', compact('prevDay', 'nextDay', 'works','date'));
     }
 }

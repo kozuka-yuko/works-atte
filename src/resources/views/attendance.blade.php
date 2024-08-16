@@ -24,12 +24,12 @@
 <div class="content">
     <div class="content__heading">
         <span>
-            <a href="{{ url('/?date=' .$prevDay->format('Y-m-d')) }}" class="prev-day">
-                << /a>
+            <a href="{{ url('attendance?work_date=' .$prevDay) }}" class="prev-day">
+                <</a>
         </span>
-        <span class="current-date">{{ $works->work_date->format('Y-m-d') }}</span>
+        <span class="current-date">{{ $date->format('Y-m-d') }}</span>
         <span>
-            <a href="{{ url('/?date=' .$nextDay->format('Y-m-d')) }}" class="next-day">></a>
+            <a href="{{ url('attendance?work_date=' .$nextDay) }}" class="next-day">></a>
         </span>
     </div>
     <table class="attendance__table">
