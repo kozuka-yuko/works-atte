@@ -16,7 +16,9 @@
                 <input type="text" name="name" value="{{ old('name') }}" placeholder="名前" />
             </div>
             <div class="form__error">
-                <!--バリデーションした後に実装-->
+                @error('name')
+                {{ $message }}
+                @enderror
             </div>
         </div>
         <div class="form__group">
@@ -24,15 +26,14 @@
                 <input type="email" name="email" value="{{ old('email') }}" placeholder="メールアドレス" />
             </div>
             <div class="form__error">
-                <!--バリデーションした後に実装-->
+                @error('email')
+                {{ $message }}
+                @enderror
             </div>
         </div>
         <div class="form__group">
             <div class="form__input">
                 <input type="password" name="password" placeholder="パスワード" />
-            </div>
-            <div class="form__error">
-                <!--バリデーションした後に実装-->
             </div>
         </div>
         <div class="form__group">
@@ -40,7 +41,9 @@
                 <input type="password" name="password_confirmation" placeholder="確認用パスワード" />
             </div>
             <div class="form__error">
-                <!--バリデーションした後に実装-->
+                @error('password')
+                {{ $message }}
+                @enderror
             </div>
         </div>
         <div class="form__button">

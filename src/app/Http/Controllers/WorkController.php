@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 require '../vendor/autoload.php';
 
 use Illuminate\Http\Request;
+use App\Http\Requests\LoginRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Work;
 use App\Models\Breaking;
@@ -46,12 +47,17 @@ class WorkController extends Controller
     {
         $user = Auth::user();
         $newWork = Work::where('user_id', $user->id)->orderBy('created_at', 'desc')->first();
-        $newBreaking = Breaking::where('work_id', $newWork->id)->orderBy('created_at', 'desc')->first();
+        if($newWork){
+            $newBreaking = Breaking::where('work_id', $newWork->id)->orderBy('created_at', 'desc')->first();
+        }else{
+            $newBreaking = null;
+        }
 
         $isWorkStartDisabled = $newWork && $newWork->work_start !== null && $newWork->work_end === null;
         $isWorkEndDisabled = !$isWorkStartDisabled || ($newWork && $newWork->work_end !== null);
         $isBreakingStartDisabled = !$isWorkStartDisabled || ($newBreaking && $newBreaking->breaking_start !== null && $newBreaking->breaking_end === null);
         $isBreakingEndDisabled = !$isWorkStartDisabled || !$isBreakingStartDisabled;
+        
         return view('work', compact('user', 'isWorkStartDisabled', 'isWorkEndDisabled', 'isBreakingStartDisabled', 'isBreakingEndDisabled'));
     }
 
