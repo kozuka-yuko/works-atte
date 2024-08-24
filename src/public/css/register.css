@@ -21,6 +21,7 @@
 
 .form__error {
     height: 20px;
+    width: 400px;
     color: #ff0000;
     text-align: left;
 }

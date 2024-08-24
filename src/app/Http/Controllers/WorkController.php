@@ -54,9 +54,9 @@ class WorkController extends Controller
         }
 
         $isWorkStartDisabled = $newWork && $newWork->work_start !== null && $newWork->work_end === null;
-        $isWorkEndDisabled = !$isWorkStartDisabled || ($newWork && $newWork->work_end !== null);
         $isBreakingStartDisabled = !$isWorkStartDisabled || ($newBreaking && $newBreaking->breaking_start !== null && $newBreaking->breaking_end === null);
         $isBreakingEndDisabled = !$isWorkStartDisabled || !$isBreakingStartDisabled;
+        $isWorkEndDisabled = !$isWorkStartDisabled || ($newWork && $newWork->work_end !== null)|| $isBreakingStartDisabled;
         
         return view('work', compact('user', 'isWorkStartDisabled', 'isWorkEndDisabled', 'isBreakingStartDisabled', 'isBreakingEndDisabled'));
     }
@@ -146,7 +146,7 @@ class WorkController extends Controller
         $prevDay = $date->copy()->subDay()->format('Y-m-d');
         $nextDay = $date->copy()->addDay()->format('Y-m-d');
 
-        $works = Work::whereDate('created_at', $date->format('Y-m-d'))->with('user')->paginate(5);
+        $works = Work::whereDate('created_at', $date->format('Y-m-d'))->with('user')->simplePaginate(5);
 
         foreach ($works as $work) {
             $work->work_start = gmdate('H:i:s', $work->work_start);

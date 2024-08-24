@@ -69,6 +69,6 @@
         </tr>
         @endforeach
     </table>
-    {{ $works->links() }}
+    {{ $works->appends(['work_date' => $date->format('Y-m-d')])->links() }}
 </div>
 @endsection

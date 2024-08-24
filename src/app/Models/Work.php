@@ -17,11 +17,4 @@ class Work extends Model
     {
         return $this->belongsTo(User::class);
     }
-    /*
-    public function scopeDateSearch($query, $work_date)
-    {
-        if (!empty($work_date)) {
-            $query->whereDate('work_date', $work_date);
-        }
-    }*/
 }

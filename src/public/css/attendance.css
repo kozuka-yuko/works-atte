@@ -1,3 +1,8 @@
+.prev-day,
+.next-day {
+    text-decoration: none;
+}
+
 .attendance__table {
     margin-top: 16px;
 }

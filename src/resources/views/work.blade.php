@@ -28,12 +28,6 @@
     <form action="/work_start" class="form" method="post">
         @csrf
         <div class="main__inner-work">
-            @php 
-            $isWorkStartDisabled = $isWorkStartDisabled ?? false;
-            $isWorkEndDisabled = $isWorkEndDisabled ?? true;
-            $isBreakingStartDisabled = $isBreakingStartDisabled ?? true;
-            $isBreakingEndDisabled = $isBreakingEndDisabled ?? true;
-            @endphp
             <input type="submit" {{$isWorkStartDisabled ? 'disabled' : '' }} class="work-start" name="work-start" value="勤務開始" />
         </div>
     </form>
