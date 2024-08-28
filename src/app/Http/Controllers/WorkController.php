@@ -14,35 +14,6 @@ use Carbon\Carbon;
 class WorkController extends Controller
 {
 
-    public function newRecordAtMidnight()
-    {
-        $user = Auth::user();
-        $now = Carbon::now();
-        $yesterday = $now->copy()->subDay()->format('Y-m-d');
-        $breaking = Breaking::whereDate('created_at', $yesterday)->get();
-        $work = Work::whereDate('created_at', $yesterday)->whereNull('work_end')->first();
-        if ($now->isSameMinute(Carbon::today()) && $work->breaking_end === null) {
-            $work->update(['breaking_end' => $now->copy()->endOfDay()->secondsSinceMidnight()]);
-        }
-        if ($now->isSameMinute(Carbon::today())) {
-            $allBreakingTime = $breaking->sum('breaking_time');
-            if ($work) {
-                $workTime = $now->copy()->endOfDay()->secondsSinceMidnight() - $work->work_start - $allBreakingTime;
-                $work->update([
-                    'work_end' => $now->copy()->endOfDay()->secondsSinceMidnight(),
-                    'allbreaking_time' => $allBreakingTime,
-                    'work_time' => $workTime
-                ]);
-            }
-
-            Work::create([
-                'user_id' => $user->id,
-                'work_date' => $now->format('Y_m_d'),
-                'work_start' => Carbon::today()->secondsSinceMidnight()
-            ]);
-        }
-    }
-
     public function index()
     {
         $user = Auth::user();
@@ -114,23 +85,14 @@ class WorkController extends Controller
         $userId = Auth::id();
         $work = Work::where('user_id', $userId)->orderBy('created_at', 'desc')->first();
         $now = Carbon::now();
-        $lastBreaking = Breaking::where('work_id', $work->id)->whereNull('breaking_end')->first();
+        $lastBreaking = Breaking::where('work_id', $work->id)->orderBy('created_at', 'desc')->first();
 
-        if ($lastBreaking->breaking_start !== Carbon::parse('00:00:00')->secondsSinceMidnight() && is_null($lastBreaking->breaking_time)) {
-            $breakingTime = $now->secondsSinceMidnight() - $lastBreaking->breaking_start;
-            $lastBreaking->update([
-                'breaking_end' => $now->secondsSinceMidnight(),
-                'breaking_time' => $breakingTime
-            ]);
-        } else {
-            Breaking::create([
-                'work_id' => $work->id,
-                'breaking_start' => Carbon::parse('00:00:00')->secondsSinceMidnight(),
-                'breaking_end'
-                => $now->secondsSinceMidnight(),
-                'breaking_time' => $now->secondsSinceMidnight()
-            ]);
-        }
+        $breakingTime = $now->secondsSinceMidnight() - $lastBreaking->breaking_start;
+        $lastBreaking->update([
+            'breaking_end' => $now->secondsSinceMidnight(),
+            'breaking_time' => $breakingTime
+        ]);
+        
         return redirect('/');
     }
 
