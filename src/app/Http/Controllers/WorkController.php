@@ -52,9 +52,9 @@ class WorkController extends Controller
 
         $work = Work::where('user_id', $userId)->orderBy('created_at', 'desc')->first();
 
-        $breaking = Breaking::where('work_id', $work->id)->get();
+        $breakings = Breaking::where('work_id', $work->id)->get();
 
-        $allBreakingTime = $breaking->sum('breaking_time');
+        $allBreakingTime = $breakings->sum('breaking_time');
         $workEnd = $now->secondsSinceMidnight();
         $work_time = $workEnd - $work->work_start - $allBreakingTime;
         $work->update([
