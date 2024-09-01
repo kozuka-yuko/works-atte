@@ -55,15 +55,11 @@ class MidnightTaskCommand extends Command
 
                     $breakings = Breaking::where('work_id', $work->id)->whereDate('created_at', $yesterday)->get();
                     $lastbreaking = $breakings->whereNull('breaking_end')->first();
-
+                    $breakingTime = $now->copy()->endOfDay()->secondsSinceMidnight() - $lastbreaking->breaking_start;
                     if ($lastbreaking) {
                         $lastbreaking->update([
                             'breaking_end' => $now->copy()->endOfDay()->secondsSinceMidnight(),
-                            'breaking_time' => $lastbreaking->breaking_end - $lastbreaking->breaking_start
-                        ]);
-                        Breaking::create([
-                            'work_id' => $work->id + 1,
-                            'breaking_start' => Carbon::today()->startOfDay()->secondsSinceMidnight()
+                            'breaking_time' => $breakingTime
                         ]);
                     }
 
@@ -79,6 +75,13 @@ class MidnightTaskCommand extends Command
                             'user_id' => $user->id,
                             'work_date' => $now->format('Y_m_d'),
                             'work_start' => Carbon::today()->startOfDay()->secondsSinceMidnight()
+                        ]);
+
+                        $newWork = Work::where('user_id',$user->id)->orderBy('created_at','desc')->first();
+
+                        Breaking::create([
+                            'work_id' => $newWork->id,
+                            'breaking_start' => Carbon::today()->startOfDay()->secondsSinceMidnight()
                         ]);
                     }
                 }
