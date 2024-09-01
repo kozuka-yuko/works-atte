@@ -1,0 +1,49 @@
+.content__heading {
+    font-size: 25px;
+}
+
+.main__inner {
+    width: 100%;
+    display: flex;
+}
+
+.form {
+    width: 50%;
+    text-align: center;
+}
+
+.main__inner-work {
+    width: 100%;
+}
+
+.main__inner-breaking {
+    width: 100%;
+}
+
+.work-start,
+.breaking-start {
+    margin-top: 20px;
+    margin-left: 80px;
+    width: 70%;
+    height: 180px;
+    font-size: 30px;
+    font-weight: bold;
+    background-color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.work-end,
+.breaking-end {
+    margin-top: 20px;
+    margin-right: 80%;
+    width: 70%;
+    height: 180px;
+    font-size: 30px;
+    font-weight: bold;
+    background-color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
