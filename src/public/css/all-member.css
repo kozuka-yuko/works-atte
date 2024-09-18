@@ -1,0 +1,60 @@
+.title {
+    margin-left: 55px;
+}
+
+.search-form {
+    display: flex;
+    margin-left: 50px;
+    width: 70%;
+}
+
+.search-form__item {
+    height: 80%;
+    width: 50%;
+}
+
+.search-form__name-input {
+    padding: 10px;
+}
+
+.search-form__button-submit {
+    padding: 8px 20px;
+    margin-left: 20px;
+    cursor: pointer;
+}
+
+.member-data__table {
+    width: 100%;
+}
+
+.table__row {
+    border-bottom: 1px solid #696969;
+}
+
+.table__label,
+.member__data {
+    padding: 16px 8px;
+}
+
+.table__label:first-of-type,
+.member__data:first-of-type {
+    padding-left: 48px;
+}
+
+.table__label:last-of-type,
+.member__data:last-of-type {
+    padding-right: 48px;
+}
+
+.table__label {
+    font-weight: bold;
+}
+
+.member__data {
+    text-align: center;
+}
+
+svg.w-5.h-5 {
+    width: 30px;
+    height: 30px;
+}
