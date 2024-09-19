@@ -31,6 +31,9 @@
                 名前
             </th>
             <th class="table__label">
+                勤務日
+            </th>
+            <th class="table__label">
                 勤務開始
             </th>
             <th class="table__label">
@@ -46,6 +49,9 @@
         <tr class="table__row">
             <td class="work__data">
                 {{ $work->user->name }}
+            </td>
+            <td class="work__data">
+                {{ $work->created_at->format('Y-m-d') }}
             </td>
             <td class="work__data">
                 {{ $work->work_start }}

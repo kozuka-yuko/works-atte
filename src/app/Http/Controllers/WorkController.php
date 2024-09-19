@@ -140,6 +140,13 @@ class WorkController extends Controller
     {
         $userId = $request->input('user_id');
         $works = Work::where('user_id', $userId)->simplepaginate(5);
+
+        foreach ($works as $work) {
+            $work->work_start = gmdate('H:i:s', $work->work_start);
+            $work->work_end = gmdate('H:i:s', $work->work_end);
+            $work->allbreaking_time = gmdate('H:i:s', $work->allbreaking_time);
+            $work->work_time = gmdate('H:i:s', $work->work_time);
+        }
         return view('person-work', compact('works'));
     }
 }
