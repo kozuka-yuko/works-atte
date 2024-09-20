@@ -123,7 +123,7 @@ class WorkController extends Controller
 
     public function searchNameEmail(Request $request)
     {
-        if (!empty($request->name__input)) {
+        if (!empty($request->name__input) || !empty($request->email__input)) {
             $users = User::SearchName($request->name__input)->SearchEmail($request->email__input)->simplePaginate(5);
         } else {
             $users = User::select('id', 'name', 'email')->simplePaginate(5);

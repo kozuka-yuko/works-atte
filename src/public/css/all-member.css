@@ -20,6 +20,7 @@
 .search-form__email-input {
     padding: 10px;
     margin-left: 20px;
+    width: 190px;
 }
 
 .search-form__button-submit {

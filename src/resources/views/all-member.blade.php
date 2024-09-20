@@ -25,8 +25,8 @@
     <h2 class="title">登録会員一覧</h2>
     <form action="/all-member" class="search-form" method="get">
         <div class="search-form__item">
-            <input type="text" class="search-form__name-input" name="name__input" placeholder="名前" value="{{ old('name__input') }}">
-            <input type="text" class="search-form__email-input" name="email__input" placeholder="メールアドレス" value="{{ old('email__input') }}">
+            <input type="text" class="search-form__name-input" name="name__input" placeholder="名前検索" value="{{ old('name__input') }}">
+            <input type="text" class="search-form__email-input" name="email__input" placeholder="メールアドレス検索" value="{{ old('email__input') }}">
             <button class="search-form__button-submit" type="submit">検索</button>
         </div>
     </form>
