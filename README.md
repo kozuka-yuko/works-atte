@@ -115,4 +115,4 @@ DB_PORT=3306
 上記はdocker-compose.ymlで作成したデータベース名、ユーザー名、パスワードを記述している。
 （mysqlのenvironent部分）
 docker-compose.ymlで設定したphpmyadminにデータベース（laravel_db）が存在しているか確認ができたら完了。
-http://localhost:8080/　で確認。
+(http://localhost:8080/) で確認。
