@@ -121,15 +121,15 @@ class WorkController extends Controller
         return view('attendance', compact('prevDay', 'nextDay', 'works', 'date'));
     }
 
-    public function searchName(Request $request)
+    public function searchNameEmail(Request $request)
     {
-        if (!empty($request->name__input)){
-            $users = User::SearchName($request->name__input)->simplePaginate(5);
-        }else{
+        if (!empty($request->name__input)) {
+            $users = User::SearchName($request->name__input)->SearchEmail($request->email__input)->simplePaginate(5);
+        } else {
             $users = User::select('id', 'name', 'email')->simplePaginate(5);
         }
 
-        if ($users->isEmpty()){
+        if ($users->isEmpty()) {
             $users = collect();
         }
 

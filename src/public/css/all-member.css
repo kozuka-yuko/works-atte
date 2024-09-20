@@ -10,11 +10,16 @@
 
 .search-form__item {
     height: 80%;
-    width: 50%;
+    width: 70%;
 }
 
 .search-form__name-input {
     padding: 10px;
+}
+
+.search-form__email-input {
+    padding: 10px;
+    margin-left: 20px;
 }
 
 .search-form__button-submit {

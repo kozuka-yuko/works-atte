@@ -42,9 +42,17 @@ class User extends Authenticatable implements MustVerifyEmail
         'email_verified_at' => 'datetime',
     ];
 
-    public function scopeSearchName($query, $name__input){
-        if(!empty($name__input)) {
+    public function scopeSearchName($query, $name__input)
+    {
+        if (!empty($name__input)) {
             $query->where('name', 'like', '%' .  $name__input . '%');
+        }
+    }
+
+    public function scopeSearchEmail($query, $email__input)
+    {
+        if (!empty($email__input)) {
+            $query->where('email', 'like', '%' . $email__input . '%');
         }
     }
 }
