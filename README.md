@@ -65,9 +65,11 @@ mailhog
 開発環境をGitHubからクローン。
 
 クローンを作りたいディレクトリ下で以下のコマンドを実行。
+
 `$ git clone git@github.com:coachtech-material/laravel-docker-template.git`
 
 リポジトリ名の変更。
+
 `$ mv laravel-docker-template 新しいリポジトリ名`
 
 2.個人のリモートリポジトリURLを変更
@@ -76,6 +78,7 @@ GitHubで、上記コマンドで指定した「新しいリポジトリ名」�
 ローカルリポジトリから紐づけ先を変更するために、GitHubで新しいリポジトリ名で作成したリポジトリのURLを取得する。
 
 URLはQuik setup～内の四角が二つ重なったアイコンから取得する。
+
 (https://coachtech-lms-bucket.s3.ap-northeast-1.amazonaws.com/curriculum/07_part/01_chapter/img/remote-url.png)
 下記コマンドの実行。
 ```
@@ -96,7 +99,9 @@ $ git push origin main
 GitHubのページを見てdockerフォルダやsrcフォルダが反映されていれば成功。
 
 エラーが発生する場合は
+
 `$ sudo chmod -R 777 *`
+
 コマンドを実行後、もう一度コマンドを実行し直してみる。
 
 4.Dockerの設定
@@ -111,8 +116,11 @@ Dockerにコンテナができているか確認。
 共有元が作成したcomposer.jsonファイルやcomposer.lockファイルを元に必要なパッケージをインストールする。
 
 PHPコンテナ内にログインする。
+
 `$ docker-compose exec php bash`
+
 下記コマンドでcomposer.jsonに記載されたパッケージのリストをインストール。
+
 `$ composer install`
 
 6.「.envファイル」の作成
