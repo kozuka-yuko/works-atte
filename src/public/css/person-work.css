@@ -1,0 +1,35 @@
+.work__table {
+    margin-top: 16px;
+}
+
+.table__row {
+    border-bottom: 1px solid #696969;
+}
+
+.table__label,
+.work__data {
+    padding: 16px 8px;
+}
+
+.table__label:first-of-type,
+.work__data:first-of-type {
+    padding-left: 48px;
+}
+
+.table__label:last-of-type,
+.work__data:last-of-type {
+    padding-right: 48px;
+}
+
+.table__label {
+    font-weight: bold;
+}
+
+.work__data {
+    text-align: center;
+}
+
+svg.w-5.h-5 {
+    width: 30px;
+    height: 30px;
+}

@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('css')
-<link rel="stylesheet" href="{{ asset('css/attendance.css') }}" />
+<link rel="stylesheet" href="{{ asset('css/person-work.css') }}" />
 @endsection
 
 @section('link')
@@ -25,20 +25,13 @@
 
 @section('content')
 <div class="content">
-    <div class="content__heading">
-        <span>
-            <a href="{{ url('attendance?work_date=' .$prevDay) }}" class="prev-day">
-                < </a>
-        </span>
-        <span class="current-date">{{ $date->format('Y-m-d') }}</span>
-        <span>
-            <a href="{{ url('attendance?work_date=' .$nextDay) }}" class="next-day">> </a>
-        </span>
-    </div>
-    <table class="attendance__table">
+    <table class="work__table">
         <tr class="table__row">
             <th class="table__label">
                 名前
+            </th>
+            <th class="table__label">
+                勤務日
             </th>
             <th class="table__label">
                 勤務開始
@@ -54,24 +47,28 @@
         </tr>
         @foreach($works as $work)
         <tr class="table__row">
-            <td class="attendance__data">
+            <td class="work__data">
                 {{ $work->user->name }}
             </td>
-            <td class="attendance__data">
+            <td class="work__data">
+                {{ $work->created_at->format('Y-m-d') }}
+            </td>
+            <td class="work__data">
                 {{ $work->work_start }}
             </td>
-            <td class="attendance__data">
+            <td class="work__data">
                 {{ ($work->work_end === null || $work->work_end === '00:00:00') ? ' ' : $work->work_end }}
             </td>
-            <td class="attendance__data">
+            <td class="work__data">
                 {{ ($work->allbreaking_time === null || $work->allbreaking_time === '00:00:00') ? ' ' : $work->allbreaking_time }}
             </td>
-            <td class="attendance__data">
+            <td class="work__data">
                 {{ ($work->work_time === null || $work->work_time === '00:00:00') ? ' ' : $work->work_time }}
             </td>
         </tr>
         @endforeach
     </table>
-    {{ $works->appends(['work_date' => $date->format('Y-m-d')])->links() }}
+    {{ $works->links() }}
 </div>
+
 @endsection

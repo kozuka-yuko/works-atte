@@ -9,6 +9,7 @@ use App\Http\Requests\LoginRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Work;
 use App\Models\Breaking;
+use App\Models\User;
 use Carbon\Carbon;
 
 class WorkController extends Controller
@@ -18,17 +19,17 @@ class WorkController extends Controller
     {
         $user = Auth::user();
         $newWork = Work::where('user_id', $user->id)->orderBy('created_at', 'desc')->first();
-        if($newWork){
+        if ($newWork) {
             $newBreaking = Breaking::where('work_id', $newWork->id)->orderBy('created_at', 'desc')->first();
-        }else{
+        } else {
             $newBreaking = null;
         }
 
         $isWorkStartDisabled = $newWork && $newWork->work_start !== null && $newWork->work_end === null;
         $isBreakingStartDisabled = !$isWorkStartDisabled || ($newBreaking && $newBreaking->breaking_start !== null && $newBreaking->breaking_end === null);
         $isBreakingEndDisabled = !$isWorkStartDisabled || !$isBreakingStartDisabled;
-        $isWorkEndDisabled = !$isWorkStartDisabled || ($newWork && $newWork->work_end !== null)|| $isBreakingStartDisabled;
-        
+        $isWorkEndDisabled = !$isWorkStartDisabled || ($newWork && $newWork->work_end !== null) || $isBreakingStartDisabled;
+
         return view('work', compact('user', 'isWorkStartDisabled', 'isWorkEndDisabled', 'isBreakingStartDisabled', 'isBreakingEndDisabled'));
     }
 
@@ -92,17 +93,17 @@ class WorkController extends Controller
             'breaking_end' => $now->secondsSinceMidnight(),
             'breaking_time' => $breakingTime
         ]);
-        
+
         return redirect('/');
     }
 
-    public function search(Request $request)
+    public function searchWorkDate(Request $request)
     {
-        $date = $request->input("work_date");
-        if($date && preg_match("/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/",$date)){
-            $date = Carbon::createFromFormat('Y-m-d',$date);
-        }else{
-            $date =Carbon::today();
+        $date = $request->query("work_date");
+        if ($date && preg_match("/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/", $date)) {
+            $date = Carbon::createFromFormat('Y-m-d', $date);
+        } else {
+            $date = Carbon::today();
         }
 
         $prevDay = $date->copy()->subDay()->format('Y-m-d');
@@ -117,6 +118,35 @@ class WorkController extends Controller
             $work->work_time = gmdate('H:i:s', $work->work_time);
         }
 
-        return view('attendance', compact('prevDay', 'nextDay', 'works','date'));
+        return view('attendance', compact('prevDay', 'nextDay', 'works', 'date'));
+    }
+
+    public function searchNameEmail(Request $request)
+    {
+        if (!empty($request->name__input) || !empty($request->email__input)) {
+            $users = User::SearchName($request->name__input)->SearchEmail($request->email__input)->simplePaginate(5);
+        } else {
+            $users = User::select('id', 'name', 'email')->simplePaginate(5);
+        }
+
+        if ($users->isEmpty()) {
+            $users = collect();
+        }
+
+        return view('all-member', compact('users'));
+    }
+
+    public function personWork(Request $request)
+    {
+        $userId = $request->input('user_id');
+        $works = Work::where('user_id', $userId)->simplepaginate(5);
+
+        foreach ($works as $work) {
+            $work->work_start = gmdate('H:i:s', $work->work_start);
+            $work->work_end = gmdate('H:i:s', $work->work_end);
+            $work->allbreaking_time = gmdate('H:i:s', $work->allbreaking_time);
+            $work->work_time = gmdate('H:i:s', $work->work_time);
+        }
+        return view('person-work', compact('works'));
     }
 }

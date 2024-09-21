@@ -13,6 +13,9 @@
     <div class="header__link">
         <a href="/attendance" class="header__link--inner">日付一覧</a>
     </div>
+    <div class="header__link">
+        <a href="/all-member" class="header__link--inner">登録会員一覧</a>
+    </div>
     <form action="/logout" method="post">
         @csrf
         <input type="submit" class="header__link" value="ログアウト" />
