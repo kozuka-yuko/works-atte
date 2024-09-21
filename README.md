@@ -39,7 +39,7 @@ mailhog
 ![スプレッドシートのテーブル設計図](https://docs.google.com/spreadsheets/d/1lC1426WgydyIdgmm7YUPgolBS4aHdJD6K7-AQLBRrL8/edit?pli=1&gid=1844436133#gid=1844436133&range=A1:F30)
 
 ## ER図
-![ER図](./docs/drawio.png)
+![ER図](./docs/atte.drawio.png)
 
 # 環境構築
 1.リポジトリの設定
